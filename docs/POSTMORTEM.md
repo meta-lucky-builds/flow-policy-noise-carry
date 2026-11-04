@@ -2,7 +2,7 @@
 
 ## What happened
 
-The first full benchmark started 8 workers with up to 20 simulators each. Seconds later, the main process was killed from outside Python ([log excerpt](../results/smolvla_libero/crashed_run_excerpt.log)):
+The first full benchmark started 8 workers with up to 20 simulators each. Before any benchmark job finished, the main process was killed from outside Python ([log excerpt](../results/smolvla_libero/crashed_run_excerpt.log)):
 
 ```text
 08:30:02 dev cells 220 to run 220

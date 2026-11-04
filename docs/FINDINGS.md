@@ -1,6 +1,6 @@
 # Findings and evidence
 
-Every SmolVLA number is recomputed from `results/smolvla_libero/quick_cells.jsonl` and `stage0_results.json` by `analysis/analyze_results.py`. Mechanism numbers are in `results/toy_mechanism.txt`.
+`analysis/analyze_results.py` recomputes the benchmark statistics from the raw episodes in `results/smolvla_libero/quick_cells.jsonl`, and reads Stage 0 values from the stored `stage0_results.json`. Mechanism numbers are in `results/toy_mechanism.txt`.
 
 ## Experiment
 

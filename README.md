@@ -37,7 +37,7 @@ Flow-matching robot policies draw fresh random noise every time they replan, so 
 
 Three things make this more useful than a single benchmark number:
 
-- **A clean negative result, with its reasons.** The noise carry failed, and a pre-declared screen shows why: on this model, noise barely changes the actions.
+- **A clean negative result, with its reasons.** The noise carry failed, and a pre-declared screen points to a likely reason: on this model, noise changes the actions only slightly.
 - **A deployment warning.** On these tasks, the setting that looks best in clean simulation became clearly worse once a 0.2 s observation delay appeared.
 - **A method others can reuse.** The under-20-minute screen, the paired design and the source-level pitfalls apply to any source-noise idea.
 
@@ -58,7 +58,7 @@ flowchart LR
 | **Matched comparisons** | Every method faced the same episodes: 0 of 1,600 start-state mismatches |
 | **Two strengths of evidence** | Separate intervals for "these tasks" and "tasks like these" |
 | **First-principles checks** | Exact flow-matching simulations test the mechanism with no learned network |
-| **Failure-tolerant execution** | Workers save each job themselves, and runs restart and resume after a crash |
+| **Failure-tolerant execution** | Workers save each job themselves, and the runner is built to restart and resume after a crash |
 
 ---
 
@@ -83,7 +83,7 @@ A gain much above 5 points from shift carry looks unlikely on this model. A smal
 | **Clean** | 67.0% | **89.5%** | **+22.5** (95% interval +13.5 to +32.0) | 50 vs 5 | 2.1×10⁻¹⁰ |
 | **0.2 s delay** | **59.5%** | 45.5% | **−14.0** (95% interval −29.0 to +0.5) | 25 vs 53 | 0.002 |
 
-The overall gap of +4.25 points looks like nothing, but it is two large opposite effects averaged together. A checkpoint evaluated only in clean simulation would suggest replanning as often as possible, which may be the wrong advice for hardware with real latency.
+The overall gap of +4.25 points looks like nothing, but it is two large opposite effects averaged together. A checkpoint evaluated only in clean simulation would favor the shorter interval, which may be the wrong choice for hardware with real latency.
 
 This was **not the planned test**, so treat it as a strong lead to confirm on fresh tasks. The checkpoint was not trained on delay, and no delay compensation was used.
 
@@ -109,7 +109,7 @@ The pre-declared Stage 0 screen returned **NO-GO** before any comparison ran, an
 | Shift carry keeps the mode | +0.8 points | +10 | **Fail** |
 | Shift carry smooths plans | 4.3% worse | 20% better | **Fail** |
 
-The whole screen took under 20 minutes and pointed to the outcome. It is a cheap check to run before investing in any source-noise method. *One caution: about 90% of the locality signal comes from two action tokens, so that single number is weak evidence.*
+The whole screen took under 20 minutes and pointed to the outcome. It is a cheap check to run before investing in any source-noise method. *Two cautions: about 90% of the locality signal comes from two action tokens, so that single number is weak evidence. The screen also flagged 54% of states as multimodal, though the spread across noise draws was small, so those modes may be small in physical terms.*
 
 ### 5. Time-aligned carry has hard limits that follow from its structure
 These results came from first principles and were then confirmed with exact flow-matching simulations. They apply before any network is trained.
@@ -122,14 +122,14 @@ These results came from first principles and were then confirmed with exact flow
 ### 6. A small tuning budget can invent a winner
 With 12 settings at 20 episodes each and **no real difference at all**, the best setting appears to gain 13 points at a true success rate of 80%, and it beats the baseline by 10+ points 51% of the time. Detecting a real 5-point gain needs about 900 episodes per arm. The final comparison here therefore never reuses settings search data for its claims, and the quick run fixes its settings in advance.
 
-### 7. Details that silently decide this kind of benchmark
+### 7. Details that decide this kind of benchmark
 Each of these came from reading the pinned source code, and each would have corrupted or voided results:
 
 | Detail in LeRobot + `smolvla_libero` | What goes wrong otherwise |
 |---|---|
 | `n_action_steps` = `chunk_size` = 50 | Chunks never overlap, so aligned carry at native settings has nothing to carry |
 | Noise is `(B, 50, 32)`, not `(B, 50, 7)` | The model also receives noise in 25 padded dimensions |
-| An empty `rename_map` overrides the saved camera mapping | Cameras silently fail to match the checkpoint |
+| An empty `rename_map` overrides the saved camera mapping | The run stops with an error because the expected cameras are not found |
 | LIBERO's `init_state_id` advances on every reset | Reused environments give each method different starting states, which breaks pairing |
 | A batch of simulators shares one action queue, and finished ones replay their last frame | Metrics and captured states get polluted by frozen episodes |
 
@@ -139,7 +139,7 @@ Each of these came from reading the pinned source code, and each would have corr
 
 - **Valid run:** 80 of 80 jobs, 1,600 episodes, **0 of 1,600** start-state mismatches, no restarts, 24 minutes on 4× RTX 5090.
 - **Decision rules were written down first:** thresholds and verdict rules live in [`ptp_vla/protocol.json`](ptp_vla/protocol.json). This repository's history starts after the runs, so that order is documented rather than provable from git.
-- **Every headline number is recomputed from raw episodes:** `tests/` fails if the numbers on this page stop matching [`results/`](results/).
+- **The main benchmark results are recomputed from raw episodes:** `tests/` fails if the key numbers on this page stop matching [`results/`](results/).
 
 **What this does not show.** It is one checkpoint in simulation, with 20 episodes per job and settings fixed by hand. The test tasks have now been seen, so any follow-up should use new ones. It says nothing about real hardware, a decoder *retrained* for correlated noise, or the spec's optional RL, trained-intent and recovery components, none of which were run. Competing methods (EAPN, CTP, MOSS, RTC) were not compared, and a planned full settings search was cut short: one run crashed before saving, and a smaller fixed-settings run replaced it. See the [post-mortem](docs/POSTMORTEM.md).
 
@@ -147,7 +147,7 @@ Each of these came from reading the pinned source code, and each would have corr
 
 ## Reproduce
 
-Recompute every number and the figure from the included raw results, with no GPU:
+Recompute the benchmark statistics and the figure from the included results, with no GPU:
 
 ```bash
 pip install -r requirements.txt
@@ -158,7 +158,7 @@ python analysis/analyze_results.py
 pytest tests
 ```
 
-Rerun the real benchmark on an Ubuntu machine with NVIDIA GPUs. It handles installation, tests EGL rendering with repair and fallback, uses every GPU, saves each job as it finishes, and restarts itself after a crash:
+Rerun the real benchmark on an Ubuntu machine with NVIDIA GPUs. It handles installation, tests EGL rendering, uses every GPU and saves each job as it finishes. It also includes rendering repair, a CPU rendering fallback and crash restart, which have not all been exercised on real hardware:
 
 ```bash
 bash ptp_vla/go.sh quick

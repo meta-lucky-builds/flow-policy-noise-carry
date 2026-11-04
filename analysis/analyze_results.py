@@ -1,4 +1,4 @@
-"""Recomputes every reported SmolVLA number from the raw per-episode results.
+"""Recomputes the benchmark statistics from raw episodes and collects the stored Stage 0 values.
 
     python analysis/analyze_results.py
 
