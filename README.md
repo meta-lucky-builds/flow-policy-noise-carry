@@ -38,7 +38,7 @@ Flow-matching robot policies draw fresh random noise every time they replan, so 
 Three things make this more useful than a single benchmark number:
 
 - **A clean negative result, with its reasons.** The noise carry failed, and a pre-declared screen shows why: on this model, noise barely changes the actions.
-- **A deployment warning.** The setting that looks best in clean simulation became significantly worse once realistic latency appeared.
+- **A deployment warning.** On these tasks, the setting that looks best in clean simulation became clearly worse once a 0.2 s observation delay appeared.
 - **A method others can reuse.** The under-20-minute screen, the paired design and the source-level pitfalls apply to any source-noise idea.
 
 ## The method
