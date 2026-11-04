@@ -1,0 +1,97 @@
+{
+  "_note": "Declared before any SmolVLA result existed. Thresholds are judgement calls, not derived values. Report any later change as a deviation.",
+  "_revision_1": "After Stage 0, before any dev or test result was saved: added same_L10_r70, same_L10_r95 and same_L25_r85. Stage 0 showed same-index carry was the only carry that preserved modes (keep 0.62 to 0.91), while shift and cyclic carry barely changed it. Stage 0 used only dev-task indices of libero_10, so test tasks remain unused for choosing settings. Rollouts of the original dev grid ran once but were lost and never inspected per method.",
+  "pins": {
+    "lerobot_commit": "ba83e4cf43737e2665be0aafcb5f513b83c7d0f3",
+    "checkpoint": "lerobot/smolvla_libero",
+    "checkpoint_revision": "a24f1f380461b665158d52acd140152c79e8b36d"
+  },
+  "env": {
+    "control_mode": "relative",
+    "observation_size": 360,
+    "init_states": true,
+    "hard_reset": true,
+    "rename_map": {
+      "observation.images.image": "observation.images.camera1",
+      "observation.images.image2": "observation.images.camera2"
+    }
+  },
+  "deviation_from_spec": "Spec 2 keeps a checkpoint's native execution window, but this checkpoint has n_action_steps=50=chunk_size, so aligned carry has no overlap there. Carry is tested at shorter L, and native L=50 is always measured.",
+  "stage0": {
+    "suite": "libero_10",
+    "tasks": [0, 2, 4, 6, 8],
+    "L": 10,
+    "episodes_per_task": 10,
+    "states": 100,
+    "samples_per_state": 64,
+    "rhos": [0.0, 0.5, 0.85, 0.95],
+    "locality_band": 5,
+    "criteria": {
+      "G0_competence_min": 0.3,
+      "G1_spread_min": 0.05,
+      "G2_locality_min": 0.6,
+      "G3_keep_gain_min": 0.1,
+      "G4_jitter_gain_min": 0.2
+    },
+    "definitions": {
+      "G0": "native L=50 success on stage 0 episodes",
+      "G1": "median per-coordinate std of the first 10 action tokens over noise draws, in normalized action units",
+      "G2": "share of token-response mass within +-5 tokens; the uniform null is reported beside it",
+      "G3": "keep(shift, rho=.95) minus keep(rho=0) at multimodal states, same observation, no state advance. If no state is multimodal this gate fails.",
+      "G4": "relative reduction of closed-loop overlap RMS, shift rho=.85 versus fresh, at L=10"
+    },
+    "role": "Diagnostic that explains the benchmark. Only FIX-BASE stops the run, because a checkpoint that cannot do the task makes the comparison meaningless. NO-GO is reported and the benchmark still runs."
+  },
+  "quick": {
+    "design": "Fixed settings with no search, chosen after Stage 0 and before any comparison result. Small by request, so it can only detect large effects. It uses the benchmark's test tasks, so any later full benchmark should treat those tasks as already seen.",
+    "seed": 1000,
+    "episodes_per_task": 20,
+    "tasks": {"libero_10": [1, 3, 5, 7, 9], "libero_goal": [1, 3, 5, 7, 9]},
+    "conditions": ["clean", "delay4"],
+    "methods": {
+      "native_L50": {"L": 50, "mode": "native", "rho": 0.0},
+      "fresh_L10": {"L": 10, "mode": "native", "rho": 0.0},
+      "shift_L10_r90": {"L": 10, "mode": "shift", "rho": 0.9},
+      "same_L10_r90": {"L": 10, "mode": "same", "rho": 0.9}
+    },
+    "primary": "same_L10_r90 minus fresh_L10, the only carry with a Stage 0 effect, against standard sampling at the same L",
+    "secondary": ["shift_L10_r90 minus fresh_L10", "same_L10_r90 minus native_L50", "fresh_L10 minus native_L50"],
+    "min_gain": 0.03
+  },
+  "benchmark": {
+    "design": "Settings are chosen on dev tasks and compared once on different test tasks from the same two suites, so choosing the best setting cannot inflate the final comparison.",
+    "dev": {"seed": 2000, "episodes_per_task": 20, "tasks": {"libero_10": [0, 2, 4, 6, 8], "libero_goal": [0, 2, 4, 6, 8]}},
+    "test": {"seed": 1000, "episodes_per_task": 50, "tasks": {"libero_10": [1, 3, 5, 7, 9], "libero_goal": [1, 3, 5, 7, 9]}},
+    "conditions": ["clean", "delay4"],
+    "delay4": "the policy sees observations 4 control ticks old (0.2 s at 20 Hz). The checkpoint was not trained on delay.",
+    "standard": {
+      "native_L50": {"L": 50, "mode": "native", "rho": 0.0},
+      "fresh_L25": {"L": 25, "mode": "native", "rho": 0.0},
+      "fresh_L10": {"L": 10, "mode": "native", "rho": 0.0},
+      "fresh_L5": {"L": 5, "mode": "native", "rho": 0.0}
+    },
+    "carry": {
+      "shift_L10_r70": {"L": 10, "mode": "shift", "rho": 0.7},
+      "shift_L10_r90": {"L": 10, "mode": "shift", "rho": 0.9},
+      "cyc_L10_r70": {"L": 10, "mode": "cyc", "rho": 0.7},
+      "cyc_L10_r90": {"L": 10, "mode": "cyc", "rho": 0.9},
+      "same_L10_r70": {"L": 10, "mode": "same", "rho": 0.7},
+      "same_L10_r90": {"L": 10, "mode": "same", "rho": 0.9},
+      "same_L10_r95": {"L": 10, "mode": "same", "rho": 0.95},
+      "same_L25_r85": {"L": 25, "mode": "same", "rho": 0.85},
+      "shift_L25_r85": {"L": 25, "mode": "shift", "rho": 0.85},
+      "cyc_L25_r85": {"L": 25, "mode": "cyc", "rho": 0.85}
+    },
+    "selection": "PTP is the carry setting with the highest dev success over both conditions. Standard is the standard setting with the highest dev success. Exact ties go to the lower rho, then the longer L.",
+    "test_methods": "PTP, standard, native_L50, and fresh noise at PTP's own L",
+    "primary": "PTP minus standard: paired success difference on test tasks, averaged over both conditions",
+    "min_gain": 0.03,
+    "verdicts": {
+      "WIN": "gain of at least 3 points, and the 95% interval that also resamples tasks is above 0",
+      "WIN-ON-THESE-TASKS-ONLY": "gain of at least 3 points, and only the fixed-task 95% interval is above 0",
+      "NO-IMPROVEMENT-SHOWN": "anything else that is not clearly worse",
+      "WORSE-THAN-STANDARD": "the fixed-task 95% interval is entirely below 0"
+    }
+  },
+  "not_run": ["EAPN", "CTP", "MOSS", "RTC", "temporal ensembling", "pi0.5", "other training seeds of the checkpoint", "real hardware"]
+}

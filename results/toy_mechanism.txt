@@ -1,0 +1,47 @@
+1a maximal coupling embedded check: pass
+1b f'(rho) max abs err vs finite diff: 8.45e-08
+1c KL=7.03385 implies ||anchor||^2 = 6.111 (spec does not state the anchor)
+1d E[KL] = mutual info = -d/2 log(1-rho^2): per coord at .95 = 1.164 nats; 12 tokens x 7 dims = 97.8 nats
+1e RQ derivative max err: 4.01e-09
+2a unimodal: |A - S^{1/2} z| rmse=0.0013; A std=0.299
+2b S^{1/2} row 8 (locality, kernel around j=8): [0.026 0.057 0.099 0.138 0.155 0.138 0.099 0.057 0.026]
+   mid-row share of squared mass within +-3 tokens: 0.983
+
+3. Open-loop mode keep rate per replan (symmetric 2-mode, stationary state, N=4000, exact flow)
+   analytic for shift, uniform: 1/2+arcsin(.75 rho)/pi
+   uniform  shift  rho=0/.5/.85/.95: 0.502 0.627 0.738 0.762
+   uniform  cyc    rho=0/.5/.85/.95: 0.495 0.672 0.824 0.891
+   uniform  same   rho=0/.5/.85/.95: 0.504 0.668 0.823 0.902
+   ramp     shift  rho=0/.5/.85/.95: 0.506 0.590 0.683 0.720
+   ramp     cyc    rho=0/.5/.85/.95: 0.489 0.639 0.732 0.741
+   ramp     same   rho=0/.5/.85/.95: 0.498 0.673 0.821 0.897
+   analytic uniform shift: 0.500 0.622 0.720 0.752
+
+4. Mode agreement after m replans at rho=.95 (uniform profile)
+   shift  m=1..8: 0.746 0.628 0.547 0.495 0.490 0.491 0.494 0.484
+   same   m=1..8: 0.891 0.853 0.827 0.801 0.787 0.773 0.748 0.736
+   shift: max |corr(z_k+4[i], z_k[j])| over all i,j = 0.0061 (MC noise ~0.0067)
+
+5. Unimodal jitter: RMS(new plan - old plan) on physically overlapping tokens
+   shift  rho=0/.5/.85/.95: 0.418 0.303 0.181 0.130
+   same   rho=0/.5/.85/.95: 0.412 0.370 0.336 0.324
+   analytic aligned: sqrt(2(1-rho))*.3: 0.424 0.300 0.164 0.095
+
+6. Closed-loop dither from y=0: lateral velocity chunks, modes +/-v, log-odds = beta*y
+   metric: mean executed-direction reversals over 25 replans; steps until |y|>commit (cap 100)
+   beta=0   shift  rho=0/.5/.85/.95 (rev/t_commit): 11.94/ 76 9.09/ 62 6.83/ 51 6.01/ 49
+   beta=0   same   rho=0/.5/.85/.95 (rev/t_commit): 11.99/ 77 8.06/ 56 4.26/ 37 2.37/ 31
+   beta=2   shift  rho=0/.5/.85/.95 (rev/t_commit): 3.79/ 40 2.40/ 34 1.42/ 31 1.14/ 29
+   beta=2   same   rho=0/.5/.85/.95 (rev/t_commit): 3.87/ 40 1.83/ 32 0.47/ 25 0.08/ 23
+   beta=8   shift  rho=0/.5/.85/.95 (rev/t_commit): 0.41/ 24 0.21/ 23 0.07/ 22 0.03/ 21
+   beta=8   same   rho=0/.5/.85/.95 (rev/t_commit): 0.42/ 24 0.11/ 22 0.02/ 22 0.00/ 21
+
+7. Selection noise in sec 11.1 under a TRUE NULL (every rho has the same p)
+   p=0.50: E[best of 12 at n=20] - p = +0.180; P(best beats rho=0 arm by >=10pp) = 0.66
+   p=0.80: E[best of 12 at n=20] - p = +0.132; P(best beats rho=0 arm by >=10pp) = 0.51
+   p=0.95: E[best of 12 at n=20] - p = +0.050; P(best beats rho=0 arm by >=10pp) = 0.08
+   n per arm, unpaired, 80% power, alpha .05:
+     p=0.80, delta=0.05: n=906
+     p=0.80, delta=0.10: n=200
+     p=0.50, delta=0.10: n=389
+     p=0.95, delta=0.03: n=589

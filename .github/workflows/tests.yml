@@ -1,0 +1,43 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  findings:
+    name: Findings match raw data
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - run: pytest tests -q
+
+  scheduler:
+    name: Multi-GPU scheduler
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pytest
+      - run: pytest test_parallel.py -q -p no:cacheprovider
+        working-directory: ptp_vla
+
+  point-mass:
+    name: Point-mass diagnostic
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - run: pip install -r point_mass/requirements.txt
+      - run: pytest test_ptp.py test_stage0.py test_bench.py -q -p no:cacheprovider
+        working-directory: point_mass

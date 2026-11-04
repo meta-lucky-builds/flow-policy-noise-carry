@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+
+# Local run outputs. Published results live in results/.
+ptp_vla/results/
+ptp_vla/run.log
+ptp_vla/.render_backend
+ptp_vla/outputs/
+point_mass/results/
+
+# Regenerable or large artifacts
+*.npz
+*.pt
+*.zip

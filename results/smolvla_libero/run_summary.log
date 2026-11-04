@@ -1,0 +1,29 @@
+=== go.sh started Wed Nov  4 13:16:36 UTC 2026
+--- machine
+Mem:             503          20         405           0          81         483
+0, NVIDIA GeForce RTX 5090, 32607 MiB, 2 MiB
+1, NVIDIA GeForce RTX 5090, 32607 MiB, 2 MiB
+2, NVIDIA GeForce RTX 5090, 32607 MiB, 2 MiB
+3, NVIDIA GeForce RTX 5090, 32607 MiB, 2 MiB
+=== run attempt 1 Wed Nov  4 13:16:38 UTC 2026
+13:16:46 render backend egl, GPUs 4, usable for this run [0, 1, 2, 3], usable cores 256, free RAM GB 482, GPU memory GB 32, workers on GPUs [0, 1, 2, 3], simulators per worker 24
+13:16:46 quick cells 80 to run 80
+13:22:39 quick|same_L10_r90|clean|libero_10|7 success 0.75 | vram GB 1.42 | hours left in quick 0.36
+13:24:06 quick|fresh_L10|clean|libero_goal|1 success 1.0 | vram GB 1.42 | hours left in quick 0.32
+13:26:52 quick|shift_L10_r90|clean|libero_goal|7 success 1.0 | vram GB 1.42 | hours left in quick 0.22
+13:31:17 quick|same_L10_r90|delay4|libero_10|3 success 0.9 | vram GB 1.42 | hours left in quick 0.15
+13:32:48 quick|same_L10_r90|delay4|libero_10|5 success 0.2 | vram GB 1.42 | hours left in quick 0.14
+13:34:18 quick|same_L10_r90|delay4|libero_10|7 success 0.45 | vram GB 1.42 | hours left in quick 0.12
+13:35:51 quick|fresh_L10|delay4|libero_goal|1 success 0.75 | vram GB 1.42 | hours left in quick 0.09
+13:36:49 quick|same_L10_r90|delay4|libero_goal|1 success 0.7 | vram GB 1.42 | hours left in quick 0.08
+13:37:04 quick|fresh_L10|delay4|libero_goal|3 success 0.05 | vram GB 1.42 | hours left in quick 0.07
+13:38:04 quick|fresh_L10|delay4|libero_goal|5 success 0.55 | vram GB 1.42 | hours left in quick 0.05
+13:39:03 quick|same_L10_r90|delay4|libero_goal|5 success 0.4 | vram GB 1.42 | hours left in quick 0.03
+13:40:12 quick|fresh_L10|delay4|libero_goal|9 success 0.05 | vram GB 1.42 | hours left in quick 0.01
+13:40:53 quick|same_L10_r90|delay4|libero_goal|9 success 0.1 | vram GB 1.42 | hours left in quick 0.0
+13:41:02 QUICK VERDICT: NO-IMPROVEMENT-SHOWN
+13:41:02 success {'native_L50': 0.6325, 'fresh_L10': 0.675, 'shift_L10_r90': 0.6849999999999999, 'same_L10_r90': 0.6425}
+13:41:02 same minus fresh {'diff': -0.03250000000000001, 'ci95': [-0.08256249999999998, 0.022500000000000003], 'ci95_these_tasks': [-0.0675, 0.0025], 'n_episodes': 400, 'n_tasks': 10, 'discordant': [22, 35]}
+13:41:02 shift minus fresh {'diff': 0.01, 'ci95': [-0.0325, 0.05500000000000001], 'ci95_these_tasks': [-0.0225, 0.0425], 'n_episodes': 400, 'n_tasks': 10, 'discordant': [25, 21]}
+13:41:04 FINISHED
+ALL_DONE

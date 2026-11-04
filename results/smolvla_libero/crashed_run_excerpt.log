@@ -1,0 +1,8 @@
+RENDER BACKEND: egl
+54 passed in 61.71s (0:01:01)
+SETUP OK
+08:11:55 render backend egl, GPUs 4, usable for this run [0, 1, 2, 3], usable cores 256, workers on GPUs [0, 1, 2, 3, 0, 1, 2, 3], simulators per worker 33
+08:12:59 VERIFY PASSED {'lerobot': '0.6.2', 'torch': '2.15.0+cu132', 'cuda': '13.2', 'python': '3.12.3', 'gpu': 'NVIDIA GeForce RTX 5090', 'cpus': 256, 'chunk_size': 50, 'max_action_dim': 32, 'num_steps': 10, 'mujoco_gl': 'egl', '
+08:30:02 STAGE 0 NO-GO {'G0': True, 'G1': False, 'G2': False, 'G3': False, 'G4': False} {'competence': 0.46, 'prefix_spread_p50': 0.038403892889618874, 'locality': 0.20647316756826492, 'keep_gain': 0.00839120370370372, 'jitter_gai
+08:30:02 dev cells 220 to run 220
+bash: line 1:  7485 Killed                  python run.py all

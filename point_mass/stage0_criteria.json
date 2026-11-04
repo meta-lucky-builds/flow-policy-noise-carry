@@ -1,0 +1,10 @@
+{
+  "_note": "Thresholds are judgement calls, not derived values. Do not edit after seeing real results; report any change as a deviation.",
+  "_revision_1": "Before any trained-policy result existed: G1 Ashman threshold raised from 2 to 3.5. A dry run on an untrained model flagged 100% of states because a 2-means split of a single Gaussian gives D of about 2.66, so the original test could not detect multimodality.",
+  "G0_competence": {"metric": "fresh-policy success on clean validation scenes", "min": 0.70},
+  "G1_multimodal": {"metric": "fraction of visited pre-obstacle states with Ashman D>3.5 and minority mass>=0.1", "ashman_min": 3.5, "min": 0.05},
+  "G2_locality": {"metric": "share of squared Jacobian mass within +-3 tokens, averaged over visited states", "min": 0.60, "role": "report and interpret; required for trusting shift alignment"},
+  "G3_mode_gain": {"metric": "keep(shift, rho=.95) minus keep(rho=0) at multimodal states, after real execution of L steps", "min": 0.10},
+  "G4_jitter_gain": {"metric": "relative reduction of overlap RMS at rho=.85 vs rho=0 across visited states", "min": 0.20},
+  "decision": "GO if G0 and G1 and G2 pass, and at least one of G3 or G4 passes. FIX-BASE if G0 fails. Otherwise NO-GO for scalar shift carry on this task."
+}

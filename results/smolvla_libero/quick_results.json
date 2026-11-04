@@ -1,0 +1,186 @@
+{
+ "verdict": "NO-IMPROVEMENT-SHOWN",
+ "primary_same_minus_fresh": {
+  "diff": -0.03250000000000001,
+  "ci95": [
+   -0.08256249999999998,
+   0.022500000000000003
+  ],
+  "ci95_these_tasks": [
+   -0.0675,
+   0.0025
+  ],
+  "n_episodes": 400,
+  "n_tasks": 10,
+  "discordant": [
+   22,
+   35
+  ]
+ },
+ "shift_minus_fresh": {
+  "diff": 0.01,
+  "ci95": [
+   -0.0325,
+   0.05500000000000001
+  ],
+  "ci95_these_tasks": [
+   -0.0225,
+   0.0425
+  ],
+  "n_episodes": 400,
+  "n_tasks": 10,
+  "discordant": [
+   25,
+   21
+  ]
+ },
+ "same_minus_native": {
+  "diff": 0.009999999999999998,
+  "ci95": [
+   -0.09000000000000001,
+   0.12250000000000001
+  ],
+  "ci95_these_tasks": [
+   -0.045,
+   0.065
+  ],
+  "n_episodes": 400,
+  "n_tasks": 10,
+  "discordant": [
+   69,
+   65
+  ]
+ },
+ "fresh_minus_native": {
+  "diff": 0.042499999999999996,
+  "ci95": [
+   -0.05249999999999999,
+   0.1375
+  ],
+  "ci95_these_tasks": [
+   -0.012499999999999994,
+   0.095
+  ],
+  "n_episodes": 400,
+  "n_tasks": 10,
+  "discordant": [
+   75,
+   58
+  ]
+ },
+ "success": {
+  "native_L50": 0.6325,
+  "fresh_L10": 0.675,
+  "shift_L10_r90": 0.6849999999999999,
+  "same_L10_r90": 0.6425
+ },
+ "primary_by_condition": {
+  "clean": {
+   "diff": -0.030000000000000006,
+   "ci95": [
+    -0.1,
+    0.034999999999999996
+   ],
+   "ci95_these_tasks": [
+    -0.07,
+    0.01
+   ],
+   "n_episodes": 200,
+   "n_tasks": 10,
+   "discordant": [
+    7,
+    13
+   ]
+  },
+  "delay4": {
+   "diff": -0.034999999999999996,
+   "ci95": [
+    -0.12499999999999997,
+    0.05499999999999999
+   ],
+   "ci95_these_tasks": [
+    -0.09012499999999997,
+    0.024999999999999994
+   ],
+   "n_episodes": 200,
+   "n_tasks": 10,
+   "discordant": [
+    15,
+    22
+   ]
+  }
+ },
+ "primary_by_suite": {
+  "libero_10": {
+   "diff": -0.019999999999999997,
+   "ci95": [
+    -0.10012499999999996,
+    0.075
+   ],
+   "ci95_these_tasks": [
+    -0.075,
+    0.034999999999999996
+   ],
+   "n_episodes": 200,
+   "n_tasks": 5,
+   "discordant": [
+    15,
+    19
+   ]
+  },
+  "libero_goal": {
+   "diff": -0.045,
+   "ci95": [
+    -0.10500000000000001,
+    0.01
+   ],
+   "ci95_these_tasks": [
+    -0.09000000000000001,
+    1.3877787807814458e-18
+   ],
+   "n_episodes": 200,
+   "n_tasks": 5,
+   "discordant": [
+    7,
+    16
+   ]
+  }
+ },
+ "design": "Fixed settings with no search, chosen after Stage 0 and before any comparison result. Small by request, so it can only detect large effects. It uses the benchmark's test tasks, so any later full benchmark should treat those tasks as already seen.",
+ "environment": {
+  "lerobot": "0.6.2",
+  "torch": "2.15.0+cu132",
+  "cuda": "13.2",
+  "python": "3.12.3",
+  "gpu": "NVIDIA GeForce RTX 5090",
+  "cpus": 256,
+  "chunk_size": 50,
+  "max_action_dim": 32,
+  "num_steps": 10,
+  "mujoco_gl": "egl",
+  "determinism_max_diff": 0.0,
+  "noise_change_mean": 0.04697617515921593,
+  "padded_noise_effect_mean": 0.010495295748114586,
+  "verified": true,
+  "render_backend": "egl",
+  "workers": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "simulators_per_worker": 24,
+  "usable_cores": 256,
+  "free_ram_gb": 482.3908805847168
+ },
+ "not_run": [
+  "EAPN",
+  "CTP",
+  "MOSS",
+  "RTC",
+  "temporal ensembling",
+  "pi0.5",
+  "other training seeds of the checkpoint",
+  "real hardware"
+ ]
+}

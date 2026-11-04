@@ -1,0 +1,20 @@
+{
+  "_note": "Declared before any trained policy or benchmark result existed. Thresholds are judgement calls. Any later change must be reported as a deviation.",
+  "task": "2-D point-mass obstacle task of spec 8.2, low-dimensional. A mechanism diagnostic, not a robot benchmark or SOTA claim.",
+  "training_seeds": 3,
+  "conditions": ["clean", "goal", "obstacle", "velocity", "delay2"],
+  "selection": {
+    "seeds": "validation scenes, 1000 per condition per training seed",
+    "candidates": {"shift": [0.25, 0.5, 0.7, 0.85, 0.95], "same": [0.5, 0.85, 0.95], "cyc": [0.5, 0.85, 0.95]},
+    "score": "mean success over the five conditions and all training seeds",
+    "rule": "for each carry mode, the lowest rho whose score is within one paired standard error of that mode's best, or rho=0 if fresh is within one standard error of that best"
+  },
+  "test": {
+    "seeds": "locked test scenes starting at 2000000, 2000 per condition per training seed, same scenes for every method",
+    "methods": ["fresh L=4", "selected shift", "selected same", "selected cyc", "fresh L=2", "fresh L=8", "selected shift rho at L=8", "temporal ensemble"]
+  },
+  "primary_endpoint": "selected shift minus fresh L=4: paired success difference averaged over conditions and training seeds",
+  "win_rule": "WIN only if the 95% bootstrap lower bound is above 0, the point estimate is at least 3 percentage points, and all three training seeds agree in sign. If shift selection returns rho=0, the result is NULL.",
+  "not_run": ["EAPN", "CTP", "MOSS", "RTC", "diffusion policy", "real-robot or robosuite tasks"],
+  "known_departures_from_spec": ["3 training seeds instead of 5", "delay tested at 2 ticks only, training data has no delay", "no partial-observation variant", "expert data almost never demonstrates route switching"]
+}
