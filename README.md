@@ -7,7 +7,7 @@
 **We built the idea, tried to break it on a real vision-language-action model, and published what happened.**<br>
 **The noise trick did not hold up. A far larger effect turned up instead: one that reverses under 0.2 seconds of delay.**
 
-[![Tests](https://github.com/meta-lucky-builds/posterior-transport-policy/actions/workflows/tests.yml/badge.svg)](https://github.com/meta-lucky-builds/posterior-transport-policy/actions/workflows/tests.yml)
+[![Tests](https://github.com/meta-lucky-builds/flow-policy-noise-carry/actions/workflows/tests.yml/badge.svg)](https://github.com/meta-lucky-builds/flow-policy-noise-carry/actions/workflows/tests.yml)
 ![Episodes](https://img.shields.io/badge/benchmark-1%2C600%20paired%20episodes-2a78d6)
 ![Model](https://img.shields.io/badge/model-SmolVLA%20on%20LIBERO-52514e)
 ![Hardware](https://img.shields.io/badge/hardware-4%C3%97%20RTX%205090-52514e)
