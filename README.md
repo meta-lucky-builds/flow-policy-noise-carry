@@ -1,25 +1,64 @@
+<div align="center">
+
 # Posterior Transport Policy
 
-### Does remembering the noise make a robot flow-matching policy better?
+### Does remembering the noise make a robot's flow-matching policy better?
 
-**We built the idea, tried to break it on a real vision-language-action model, and it did not hold up. The experiment found something larger instead.**
+**We built the idea, tried to break it on a real vision-language-action model, and published what happened.**<br>
+**The noise trick did not hold up. A far larger effect turned up instead: one that reverses under 0.2 seconds of delay.**
 
 [![Tests](https://github.com/meta-lucky-builds/posterior-transport-policy/actions/workflows/tests.yml/badge.svg)](https://github.com/meta-lucky-builds/posterior-transport-policy/actions/workflows/tests.yml)
-![Episodes](https://img.shields.io/badge/real%20benchmark-1%2C600%20paired%20episodes-2a78d6)
+![Episodes](https://img.shields.io/badge/benchmark-1%2C600%20paired%20episodes-2a78d6)
 ![Model](https://img.shields.io/badge/model-SmolVLA%20on%20LIBERO-52514e)
-![Verdict](https://img.shields.io/badge/verdict-no%20improvement%20shown-52514e)
+![Hardware](https://img.shields.io/badge/hardware-4%C3%97%20RTX%205090-52514e)
+![Verdict](https://img.shields.io/badge/PTP%20verdict-no%20improvement%20shown-52514e)
 
-Flow-matching robot policies draw fresh random noise every time they replan, and two plans in a row can disagree for no physical reason. **Posterior Transport Policy (PTP)** carries part of that noise forward, so consecutive plans stay related. It is cheap and needs no retraining, which makes it worth testing properly.
+[Key findings](#key-findings) · [Method](#the-method) · [How to read this](#how-to-read-this-work) · [Reproduce](#reproduce) · [Full evidence](docs/FINDINGS.md)
 
-| | Result on SmolVLA + LIBERO |
+</div>
+
+---
+
+## The result
+
+| Question | Answer on SmolVLA + LIBERO |
 |---|---|
-| **Noise carry vs standard flow matching** | **No improvement shown.** Shift carry: **+1.0 points** (95% interval −3.2 to +5.5) |
-| **Replanning every 10 steps instead of 50, clean** | **+22.5 points**, better on all 10 tasks (p ≈ 2×10⁻¹⁰) |
-| **The same change with a 0.2 s observation delay** | **−14.0 points** (p ≈ 0.002): the benefit reverses |
+| **Does carrying noise beat standard flow matching?** | **No improvement shown.** Shift carry: **+1.0 points** (95% interval −3.2 to +5.5) |
+| **Does replanning every 10 steps beat every 50, clean?** | **Yes, by +22.5 points**, on all 10 of 10 tasks (p ≈ 2×10⁻¹⁰) |
+| **Does that still hold with a 0.2 s observation delay?** | **No, it reverses: −14.0 points** (p ≈ 0.002) |
 
 ![Effects on task success. Replanning every 10 steps gains 22.5 points when clean and loses 14 with delay. Shift and same-index carry stay near zero.](docs/figures/effects.png)
 
-*Paired differences on 200 episodes per row. Intervals resample both tasks and episodes.*
+<sub>Paired differences on 200 episodes per row. Intervals resample both tasks and episodes.</sub>
+
+## Why this matters
+
+Flow-matching robot policies draw fresh random noise every time they replan, so two plans in a row can disagree for no physical reason. **Posterior Transport Policy (PTP)** carries part of that noise forward so consecutive plans stay related. It needs no retraining and only a thin wrapper around an existing model. If it worked, it would be close to a free upgrade for deployed policies, which is exactly why it deserved a serious attempt to break it.
+
+Three things make this more useful than a single benchmark number:
+
+- **A clean negative result, with its reasons.** The noise carry failed, and a pre-declared screen shows why: on this model, noise barely changes the actions.
+- **A deployment warning.** The setting that looks best in clean simulation became significantly worse once realistic latency appeared.
+- **A method others can reuse.** The under-20-minute screen, the paired design and the source-level pitfalls apply to any source-noise idea.
+
+## The method
+
+```mermaid
+flowchart LR
+    A["Trained policy<br/>weights frozen"] --> B["Stage 0 screen<br/>does noise matter?"]
+    B --> C["Paired benchmark<br/>same starting states"]
+    C --> D["Raw episodes<br/>saved per job"]
+    D --> E["Statistics and figure<br/>recomputed from raw data"]
+    E --> F["Tests tie claims<br/>to the data"]
+```
+
+| Discipline | How it was applied |
+|---|---|
+| **Decision rules written first** | Thresholds and verdict rules are fixed in [`protocol.json`](ptp_vla/protocol.json) |
+| **Matched comparisons** | Every method faced the same episodes: 0 of 1,600 start-state mismatches |
+| **Two strengths of evidence** | Separate intervals for "these tasks" and "tasks like these" |
+| **First-principles checks** | Exact flow-matching simulations test the mechanism with no learned network |
+| **Failure-tolerant execution** | Workers save each job themselves, and runs restart and resume after a crash |
 
 ---
 
