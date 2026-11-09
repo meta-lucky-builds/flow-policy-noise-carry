@@ -199,3 +199,5 @@ This work was carried out in collaboration with an internal research harness bui
 Built on [LeRobot](https://github.com/huggingface/lerobot), [SmolVLA](https://arxiv.org/abs/2506.01844) and [LIBERO](https://arxiv.org/abs/2306.03310). Closest prior work: [EAPN](https://arxiv.org/abs/2610.06090) (execution-aligned noise with a retrained decoder), [DSRL](https://arxiv.org/abs/2506.15799) (RL over latent noise of a frozen policy), [RTC](https://arxiv.org/abs/2506.07339) (real-time action chunking) and [PYoCo](https://arxiv.org/abs/2305.10474) (correlated noise for video). PTP does not claim novelty over these.
 
 Contributions are welcome, including results that disagree with these. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+Since this work: [VLALagBench](https://arxiv.org/abs/2611.03103) (Wen et al., 2 Nov 2026) finds inference latency can sharply cut VLA success, which fits the delay reversal above.
