@@ -139,7 +139,7 @@ Each of these came from reading the pinned source code, and each would have corr
 
 - **Valid run:** 80 of 80 jobs, 1,600 episodes, **0 of 1,600** start-state mismatches, no restarts, 24 minutes on 4× RTX 5090.
 - **Decision rules were written down first:** thresholds and verdict rules live in [`ptp_vla/protocol.json`](ptp_vla/protocol.json). This repository's history starts after the runs, so that order is documented rather than provable from git.
-- **The main benchmark results are recomputed from raw episodes:** `tests/` fails if the key numbers on this page stop matching [`results/`](results/).
+- **The main benchmark results are recomputed from raw episodes:** [`tests/`](tests/) fails if the key numbers on this page stop matching [`results/`](results/).
 
 **What this does not show.** It is one checkpoint in simulation, with 20 episodes per job and settings fixed by hand. The test tasks have now been seen, so any follow-up should use new ones. It says nothing about real hardware, a decoder *retrained* for correlated noise, or the spec's optional RL, trained-intent and recovery components, none of which were run. Competing methods (EAPN, CTP, MOSS, RTC) were not compared, and a planned full settings search was cut short: one run crashed before saving, and a smaller fixed-settings run replaced it. See the [post-mortem](docs/POSTMORTEM.md).
 
